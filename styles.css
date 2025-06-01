@@ -5,7 +5,8 @@ body {
   color: white;
   background-size: cover;
   background-position: center;
-  transition: background-image 1s ease-in-out;
+  background-repeat: no-repeat;
+  height: 100vh;
 }
 
 .container {
@@ -42,6 +43,7 @@ button {
 #todo-list {
   list-style: none;
   padding: 0;
+  margin-top: 20px;
 }
 
 #todo-list li {
