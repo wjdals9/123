@@ -95,4 +95,22 @@ const chosenImage = images[Math.floor(Math.random() * images.length)];
 document.body.style.backgroundImage = `url('img/${chosenImage}')`;
 
 // 🌤️ 날씨 기능
-const API_KEY = "5f49fec56b713b1ab4928c4505e78412"; 
+const API_KEY = "5f49fec56b713b1ab4928c4505e78412";
+
+function onGeoOk(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=kr`;
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      const weather = document.getElementById("weather");
+      weather.innerText = `${data.name}: ${data.weather[0].description} / ${data.main.temp}°C`;
+    });
+}
+
+function onGeoError() {
+  alert("위치 정보를 가져올 수 없습니다. 브라우저 권한을 확인해주세요.");
+}
+
+navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
