@@ -1,6 +1,4 @@
-// 🕒 시계 기능
 const clock = document.getElementById("clock");
-
 function updateClock() {
   const date = new Date();
   const hours = String(date.getHours()).padStart(2, "0");
@@ -10,7 +8,6 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// 👤 로그인 기능
 const loginForm = document.getElementById("login-form");
 const greeting = document.getElementById("greeting");
 const USERNAME_KEY = "username";
@@ -18,8 +15,8 @@ const USERNAME_KEY = "username";
 function onLoginSubmit(e) {
   e.preventDefault();
   const username = loginForm.querySelector("input").value;
-  loginForm.classList.add("hidden");
   localStorage.setItem(USERNAME_KEY, username);
+  loginForm.classList.add("hidden");
   paintGreeting(username);
 }
 
@@ -37,7 +34,6 @@ if (savedUsername === null) {
   paintGreeting(savedUsername);
 }
 
-// ✅ 투두리스트 기능
 const todoForm = document.getElementById("todo-form");
 const todoInput = todoForm.querySelector("input");
 const todoList = document.getElementById("todo-list");
@@ -89,12 +85,10 @@ if (savedToDos) {
   parsedToDos.forEach(paintToDo);
 }
 
-// 🖼️ 랜덤 배경 이미지
 const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg"];
 const chosenImage = images[Math.floor(Math.random() * images.length)];
 document.body.style.backgroundImage = `url('img/${chosenImage}')`;
 
-// 🌤️ 날씨 기능
 const API_KEY = "5f49fec56b713b1ab4928c4505e78412";
 
 function onGeoOk(position) {
@@ -105,12 +99,12 @@ function onGeoOk(position) {
     .then((response) => response.json())
     .then((data) => {
       const weather = document.getElementById("weather");
-      weather.innerText = `${data.name}: ${data.weather[0].description} / ${data.main.temp}°C`;
+      weather.innerText = `${data.name} / ${data.weather[0].description} / ${data.main.temp}°C`;
     });
 }
 
 function onGeoError() {
-  alert("위치 정보를 가져올 수 없습니다. 브라우저 권한을 확인해주세요.");
+  alert("위치 정보를 가져올 수 없습니다.");
 }
 
 navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
