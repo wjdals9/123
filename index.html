@@ -1,25 +1,39 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>노마드 바닐라JS 과제</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도전</title>
+    <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
-  <div class="container">
-    <h1 id="clock">00:00</h1>
-    <form id="login-form" class="hidden">
-      <input type="text" placeholder="이름을 입력하세요" required />
-      <button type="submit">로그인</button>
-    </form>
-    <h2 id="greeting" class="hidden"></h2>
-    <form id="todo-form" class="hidden">
-      <input type="text" placeholder="오늘의 할 일은?" required />
-    </form>
-    <ul id="todo-list"></ul>
-    <div id="weather"></div>
-  </div>
-  <script src="function.js"></script>
+    <div class="container">
+        <div class="js_clock">
+            <h1 class="js_time">00:00</h1>
+        </div>
+        <form class="js_form form">
+            <input type="text" placeholder="What is your name?" />
+        </form>
+        <h4 class="js_greetings greetings"></h4>
+        <form class="js_todoForm">
+            <input type="text" placeholder="Write a to do" />
+        </form>
+        <div class="list ">
+            <div class="pending">
+              <h2>PENDING</h2>
+              <ul class="js_pending"></ul>
+            </div>
+            <div class="done">
+                <h2>DONE</h2>
+                <ul class="js_done"></ul>
+            </div>
+        </div>
+    </div>
+    <span class="js_weather"></span>
+    <script src="clock.js"></script>
+    <script src="greeting.js"></script>
+    <script src="todo.js"></script>
+    <script src="background.js"></script>
+    <script src="weather.js"></script>
 </body>
 </html>
