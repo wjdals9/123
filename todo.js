@@ -9,47 +9,7 @@ const FINISHED = "done";
 let toDos = [];
 let done = [];
 
-let idNumbers = 1;
-
-function deletePendingToDo(event) {
-  const btn = event.target;
-  const li = btn.parentNode;
-  toDoList.removeChild(li);
-  toDos = toDos.filter(function (toDo) {
-    return toDo.id !== parseInt(li.id);
-  });
-  savePendingToDos();
-}
-
-function moveToDone(event) {
-  const li = event.target.parentNode;
-  const id = parseInt(li.id);
-  const toDo = toDos.find((t) => t.id === id);
-  if (!toDo) return;
-
-  deletePendingToDo(event);
-  finishedToDo(toDo.text);
-}
-
-function moveToPending(event) {
-  const li = event.target.parentNode;
-  const id = parseInt(li.id);
-  const toDo = done.find((t) => t.id === id);
-  if (!toDo) return;
-
-  deleteFinishedToDo(event);
-  pendingToDo(toDo.text);
-}
-
-function deleteFinishedToDo(event) {
-  const btn = event.target;
-  const li = btn.parentNode;
-  doneList.removeChild(li);
-  done = done.filter(function (toDo) {
-    return toDo.id !== parseInt(li.id);
-  });
-  saveFinishedToDos();
-}
+let idNumbers = 0;
 
 function savePendingToDos() {
   localStorage.setItem(PENDING, JSON.stringify(toDos));
@@ -59,13 +19,43 @@ function saveFinishedToDos() {
   localStorage.setItem(FINISHED, JSON.stringify(done));
 }
 
-function pendingToDo(text) {
+function deletePendingToDo(event) {
+  const li = event.target.parentNode;
+  toDoList.removeChild(li);
+  toDos = toDos.filter(toDo => toDo.id !== parseInt(li.id));
+  savePendingToDos();
+}
+
+function deleteFinishedToDo(event) {
+  const li = event.target.parentNode;
+  doneList.removeChild(li);
+  done = done.filter(toDo => toDo.id !== parseInt(li.id));
+  saveFinishedToDos();
+}
+
+function moveToDone(event) {
+  const li = event.target.parentNode;
+  const id = parseInt(li.id);
+  const toDo = toDos.find(toDo => toDo.id === id);
+  if (!toDo) return;
+  deletePendingToDo(event);
+  finishedToDo(toDo.text, id);
+}
+
+function moveToPending(event) {
+  const li = event.target.parentNode;
+  const id = parseInt(li.id);
+  const toDo = done.find(toDo => toDo.id === id);
+  if (!toDo) return;
+  deleteFinishedToDo(event);
+  pendingToDo(toDo.text, id);
+}
+
+function pendingToDo(text, id = null) {
   const li = document.createElement("li");
   const delBtn = document.createElement("button");
   const chkBtn = document.createElement("button");
   const span = document.createElement("span");
-  const newId = idNumbers;
-  idNumbers += 1;
 
   delBtn.innerHTML = "❌";
   chkBtn.innerHTML = "✔";
@@ -77,24 +67,30 @@ function pendingToDo(text) {
   li.appendChild(span);
   li.appendChild(chkBtn);
   li.appendChild(delBtn);
-  li.id = newId;
+
+  if (id) {
+    li.id = id;
+  } else {
+    idNumbers += 1;
+    li.id = idNumbers;
+  }
+
   toDoList.appendChild(li);
 
-  const toDoObj = {
-    text: text,
-    id: newId,
-  };
-  toDos.push(toDoObj);
+  if (!id) {
+    toDos.push({ text: text, id: idNumbers });
+  } else {
+    toDos.push({ text: text, id: id });
+  }
+
   savePendingToDos();
 }
 
-function finishedToDo(text) {
+function finishedToDo(text, id = null) {
   const li = document.createElement("li");
   const delBtn = document.createElement("button");
   const cancleBtn = document.createElement("button");
   const span = document.createElement("span");
-  const newId = idNumbers;
-  idNumbers += 1;
 
   cancleBtn.innerHTML = "←";
   delBtn.innerHTML = "❌";
@@ -106,20 +102,28 @@ function finishedToDo(text) {
   li.appendChild(span);
   li.appendChild(cancleBtn);
   li.appendChild(delBtn);
-  li.id = newId;
+
+  if (id) {
+    li.id = id;
+  } else {
+    idNumbers += 1;
+    li.id = idNumbers;
+  }
+
   doneList.appendChild(li);
 
-  const toDoObj = {
-    text: text,
-    id: newId,
-  };
-  done.push(toDoObj);
+  if (!id) {
+    done.push({ text: text, id: idNumbers });
+  } else {
+    done.push({ text: text, id: id });
+  }
+
   saveFinishedToDos();
 }
 
 function handleSubmit(event) {
   event.preventDefault();
-  const currentValue = toDoInput.value;
+  const currentValue = toDoInput.value.trim();
   if (currentValue === "") return;
   pendingToDo(currentValue);
   toDoInput.value = "";
@@ -131,15 +135,24 @@ function loadToDos() {
 
   if (loadedToDos !== null) {
     const parsedPendingToDos = JSON.parse(loadedToDos);
-    parsedPendingToDos.forEach(function (toDo) {
-      pendingToDo(toDo.text);
+    parsedPendingToDos.forEach(toDo => {
+      pendingToDo(toDo.text, toDo.id);
     });
   }
   if (finishedToDos !== null) {
     const parsedFinishedToDos = JSON.parse(finishedToDos);
-    parsedFinishedToDos.forEach(function (toDo) {
-      finishedToDo(toDo.text);
+    parsedFinishedToDos.forEach(toDo => {
+      finishedToDo(toDo.text, toDo.id);
     });
+  }
+
+  // idNumbers 최신화: 로컬스토리지에서 가장 큰 id 찾아서 idNumbers 초기화
+  const allIds = [
+    ...(loadedToDos ? JSON.parse(loadedToDos).map(t => t.id) : []),
+    ...(finishedToDos ? JSON.parse(finishedToDos).map(t => t.id) : []),
+  ];
+  if (allIds.length > 0) {
+    idNumbers = Math.max(...allIds);
   }
 }
 
