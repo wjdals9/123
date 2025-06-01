@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>노마드 과제</title>
+  <title>노마드 코더 과제</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
     <h1 id="clock">00:00</h1>
+
     <form id="login-form" class="hidden">
       <input type="text" placeholder="이름을 입력하세요" required />
-      <button>로그인</button>
+      <button type="submit">로그인</button>
     </form>
+
     <h2 id="greeting" class="hidden"></h2>
 
     <form id="todo-form" class="hidden">
@@ -22,7 +24,7 @@
 
     <div id="weather"></div>
   </div>
+
   <script src="function.js"></script>
 </body>
 </html>
-
